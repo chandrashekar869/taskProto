@@ -1,0 +1,821 @@
+<div class="row header-row" >
+  <div class="container col-9 header-col"><b><h5 style="text-align: left;">
+  Add User
+      </h5></b></div>
+  </div>
+  
+  <div class="row body-outer-row">
+  <div class="container body-outer-col col-9">
+      <mat-expansion-panel (click)="panelCLick()" (opened)="panelOpenState">
+          <mat-expansion-panel-header>
+              <mat-panel-title>
+            Add a user
+              </mat-panel-title>
+          
+          <mat-panel-description>
+              Enter user details
+            </mat-panel-description>
+            </mat-expansion-panel-header> 
+    <form  style="font-size: medium;" (ngSubmit)="register(loginForm)" #loginForm="ngForm">
+      <div class="row">
+      <div class="col-sm-4">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" class="form-control" id="name"
+                 required minlength="5" 
+                 [(ngModel)]="addUser.name" name="name"  maxlength="45"
+                 #name="ngModel">
+         </div>
+         <div  [hidden]="name.valid || name.pristine"
+         class="alert alert-danger">
+          <small [hidden]="!name.hasError('minlength')"> Username is required (minimum 5 characters).</small> <small [hidden]="!name.hasError('required')">Name is required</small>         
+    </div>
+    
+      </div>
+        <div class="col-sm-4">
+        <div class="form-group">
+          <label for="name">Email Address</label>
+          <input type="text" class="form-control" id="emailaddress"
+                 required
+                 [(ngModel)]="addUser.email" name="email"  maxlength="45"
+                 pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" 
+                 #email="ngModel">
+        </div>
+        <div [hidden]="email.valid || email.pristine"
+        class="alert alert-danger">
+     <small [hidden]="!email.hasError('required')">Email is required</small>
+     <small [hidden]="!email.hasError('pattern')">Email format should be <small><b>joe@abc.com</b></small></small>
+   </div>
+  
+      </div>
+        <div class="col-sm-4">
+        <div class="form-group">
+          <label for="name">Mobile Number</label>
+          <input type="text" class="form-control" id="mobilenumber"
+                 required
+                 [(ngModel)]="addUser.mobile" name="mobilenumber" 
+                 pattern="[0-9]*"
+                 minlength="10"
+                 maxlength="10" 
+                 #mobile="ngModel">
+        </div>
+        <div [hidden]="mobile.valid || mobile.pristine"
+        class="alert alert-danger">
+     <small [hidden]="!mobile.hasError('minlength')">Mobile number should be 10digit</small>
+     <small [hidden]="!mobile.hasError('required')">Mobile number is required</small>
+     <small [hidden]="!mobile.hasError('pattern')">Mobile number should be only numbers</small>
+   </div>
+  
+      </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-4">
+          <div class="form-group">
+             <label for="name">Password</label>
+             <input type="password" class="form-control" id="password"
+             required
+             [(ngModel)]="addUser.password" name="password"  maxlength="25"
+              pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[a-z]).*$"
+             #password="ngModel">
+          </div>
+          <small class="alert alert-danger" style="display: block;" [hidden]="!password.hasError('pattern')">Password (Letters, Number/SpecialChar and min 8 Chars)</small>  
+          <small [hidden]="passwordr.hasError('pattern')||password.valid || password.pristine"
+             class="alert alert-danger">
+             Password is required
+          </small>
+  
+      </div>
+          <div class="col-sm-4">
+          <div class="form-group">
+             <label for="name">Confirm Password</label>
+             <input type="password" class="form-control" id="confirmPassword"
+             required validateEqual="password"
+             [(ngModel)]="addUser.confirmPassword" name="confirmPassword" 
+             #confirmPassword="ngModel">
+          </div>
+          <small [hidden]="addUser.password==addUser.confirmPassword || confirmPassword.pristine"
+          class="alert alert-danger">
+          Passwords did not match
+       </small>
+  
+      </div>
+          <div class="col-sm-4">
+          <div class="form-group">
+             <label for="name">Departments</label>
+          <select  name ="deaprtment" class='select-option' required  [(ngModel)]="addUser.selectedDepartment" #department="ngModel" >
+              <option class='option' [value]="selectUndefinedOptionValue"> Select a department</option>  
+            <option class='option' *ngFor='let option of departmentsList' [ngValue]="option"> {{option}} </option>
+          </select>
+          </div>
+          <small [hidden]="departmentsList.indexOf(addUser.selectedDepartment)!=-1 || department.pristine"
+             class="alert alert-danger">
+             Select a valid department
+          </small>
+  
+      </div>
+          </div>
+          <div class="row">
+          <div class="span6" style="float: none; margin: 0 auto;">
+          <div class="form-group" id="wrapper">
+            
+              <div class="row">
+              <div class="span6" style="float: none; margin: 0 auto;">
+                 <input [(ngModel)]="addUser.canApproved" type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" checked> Can Approve Time Sheet
+              </div>
+            </div>
+            <div class="row">
+              <div class="span6" style="float: none; margin: 0 auto;">
+              <button style="margin-top:15%;" [disabled]="loading" class="btn btn-primary btn-block" [disabled]="departmentsList.indexOf(addUser.selectedDepartment)==-1||addUser.password!=addUser.confirmPassword || !loginForm.form.valid">Submit</button>
+  
+              <img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" /> &nbsp;&nbsp;&nbsp;
+              <!--<button class="btn btn-success btn-lg"><a [routerLink]="['/login']"><h3>Cancel</h3></a></button> -->
+              </div>
+              </div>
+          </div>
+          </div>
+          </div>
+      </form>
+      <small [hidden]="errString=='None'"
+      class="alert alert-danger">{{errString}}
+      </small>
+      <small [hidden]="successString=='None'"
+      class="alert alert-success">{{successString}}
+      </small>
+      </mat-expansion-panel>
+      <mat-expansion-panel (click)="panelCLick()" >
+          <mat-expansion-panel-header>
+              <mat-panel-title>
+            Edit a user
+              </mat-panel-title>
+          
+          <mat-panel-description>
+              Edit User details
+    </mat-panel-description>
+            </mat-expansion-panel-header> 
+            <div class="col-sm-4">
+              <div class="form-group">
+            <label for="emailIdForEdit">Select an emailId</label>
+            <select  name ="emailIdForEdit" class='select-option' required  [(ngModel)]="editUser.selectedEmailId" (change)="selectEmail($event)" #department="ngModel" >
+              <option class='option' [value]="selectUndefinedOptionValue"> Select an email Id</option>  
+            <option class='option' *ngFor='let obj of allData;let i=index' [value]="i"> {{obj.emailId}} </option>
+          </select>  
+          </div>
+          </div>
+            <form   style="font-size: medium;" (ngSubmit)="reset(userEditForm,'everything')" #userEditForm="ngForm">
+      <div class="row">
+      <div class="col-sm-4">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" class="form-control" id="nameEdit"
+                 required minlength="5" 
+                 [(ngModel)]="editUser.name" name="name"  maxlength="45"
+                 #editName="ngModel">
+         </div>
+         <div  [hidden]="editName.valid || editName.pristine"
+         class="alert alert-danger">
+          <small [hidden]="!editName.hasError('minlength')"> Username is required (minimum 5 characters).</small> <small [hidden]="!editName.hasError('required')">Name is required</small>         
+    </div>
+    
+      </div>
+        <div class="col-sm-4">
+        <div class="form-group">
+          <label for="name">Email Address</label>
+          <input type="text" class="form-control" id="emailaddressEdit"
+                 required
+                 [(ngModel)]="editUser.email" name="email"  maxlength="45"
+                 pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" 
+                 #editEmail="ngModel">
+        </div>
+        <div [hidden]="editEmail.valid || editEmail.pristine"
+        class="alert alert-danger">
+     <small [hidden]="!editEmail.hasError('required')">Email is required</small>
+     <small [hidden]="!editEmail.hasError('pattern')">Email format should be <small><b>joe@abc.com</b></small></small>
+   </div>
+  
+      </div>
+        <div class="col-sm-4">
+        <div class="form-group">
+          <label for="name">Mobile Number</label>
+          <input type="text" class="form-control" id="mobilenumberEdit"
+                 required
+                 [(ngModel)]="editUser.mobile" name="mobilenumber" 
+                 pattern="[0-9]*"
+                 minlength="10"
+                 maxlength="10" 
+                 #editMobile="ngModel">
+        </div>
+        <div [hidden]="editMobile.valid || editMobile.pristine"
+        class="alert alert-danger">
+     <small [hidden]="!editMobile.hasError('minlength')">Mobile number should be 10digit</small>
+     <small [hidden]="!editMobile.hasError('required')">Mobile number is required</small>
+     <small [hidden]="!editMobile.hasError('pattern')">Mobile number should be only numbers</small>
+   </div>
+  
+      </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-4">
+          <div class="form-group">
+             <label for="name">Password</label>
+             <input type="password" class="form-control" id="passwordEdit"
+             required
+             [(ngModel)]="editUser.password" name="password"  maxlength="25"
+              pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[a-z]).*$"
+             #editPassword="ngModel">
+          </div>
+          <small class="alert alert-danger" style="display: block;" [hidden]="!editPassword.hasError('pattern')">Password (Letters, Number/SpecialChar and min 8 Chars)</small>  
+          <small [hidden]="editPassword.hasError('pattern')||editPassword.valid || editPassword.pristine"
+             class="alert alert-danger">
+             Password is required
+          </small>
+  
+      </div>
+          <div class="col-sm-4">
+          <div class="form-group">
+             <label for="name">Confirm Password</label>
+             <input type="password" class="form-control" id="confirmPasswordEdit"
+             required validateEqual="password"
+             [(ngModel)]="editUser.confirmPassword" name="confirmPassword" 
+             #editConfirmPassword="ngModel">
+          </div>
+          <small [hidden]="editUser.password==editUser.confirmPassword || editConfirmPassword.pristine"
+          class="alert alert-danger">
+          Passwords did not match
+       </small>
+  
+      </div>
+          <div class="col-sm-4">
+          <div class="form-group">
+             <label for="name">Departments</label>
+          <select  name ="deaprtment" class='select-option' required  [(ngModel)]="editUser.selectedDepartment" #editDepartment="ngModel" >
+              <option class='option' [value]="selectUndefinedOptionValue"> Select a department</option>  
+            <option class='option' *ngFor='let option of departmentsList' [ngValue]="option"> {{option}} </option>
+          </select>
+          </div>
+          <small [hidden]="departmentsList.indexOf(editUser.selectedDepartment)!=-1 || editDepartment.pristine"
+             class="alert alert-danger">
+             Select a valid department
+          </small>
+  
+      </div>
+          </div>
+          <div class="row">
+          <div class="span6" style="float: none; margin: 0 auto;">
+          <div class="form-group" id="wrapper">
+            
+              <div class="row">
+              <div class="span6" style="float: none; margin: 0 auto;">
+                 <input [(ngModel)]="editUser.canApproved" type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitchEdit" checked> Can Approve Time Sheet
+              </div>
+            </div>
+            <div class="row">
+              <div class="span6" style="float: none; margin: 0 auto;">
+              <button style="margin-top:15%;" [disabled]="loading" class="btn btn-primary btn-block" [disabled]="departmentsList.indexOf(editUser.selectedDepartment)==-1||editUser.password!=editUser.confirmPassword || !userEditForm.form.valid">Submit</button>
+  
+              <img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" /> &nbsp;&nbsp;&nbsp;
+              <!--<button class="btn btn-success btn-lg"><a [routerLink]="['/login']"><h3>Cancel</h3></a></button> -->
+              </div>
+              </div>
+          </div>
+          </div>
+          </div>
+      </form>
+      <small [hidden]="errString=='None'"
+      class="alert alert-danger">{{errString}}
+      </small>
+      <small [hidden]="successString=='None'"
+      class="alert alert-success">{{successString}}
+      </small>
+      </mat-expansion-panel>
+      <mat-expansion-panel (click)="panelCLick()" (opened)="panelOpenState">
+          <mat-expansion-panel-header>
+              <mat-panel-title>
+            Reset user password
+              </mat-panel-title>
+          
+          <mat-panel-description>
+              Enter user email
+            </mat-panel-description>
+            </mat-expansion-panel-header>
+            <form  style="font-size: medium;" (ngSubmit)="reset(passwordReset,'password')" #passwordReset="ngForm">
+            <div class="row">
+            <div class="col-sm-4">
+              <div class="form-group">
+                <label for="name">Email Address</label>
+                <input type="text" class="form-control" id="emailaddressr"
+                       required
+                       placeholder="Enter email"
+                       [(ngModel)]="resetPass.email" name="emailr"  maxlength="45"
+                       pattern="^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$" 
+                       #emailr="ngModel">
+                <div [hidden]="emailr.valid || emailr.pristine"
+                     class="alert alert-danger">
+                  <small [hidden]="!emailr.hasError('required')">Email is required</small>
+                  <small [hidden]="!emailr.hasError('pattern')">Email format should be <small><b>joe@abc.com</b></small></small>
+                </div>
+              </div>
+              </div>
+              <div class="col-sm-4">
+                  <div class="form-group">
+                     <label for="name">New password</label>
+                     <input type="password" class="form-control" id="passwordr"
+                     required
+                     placeholder="Enter new password"
+                     [(ngModel)]="resetPass.password" name="password"  maxlength="25"
+                      pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[a-z]).*$"
+                     #passwordr="ngModel">
+                     
+                  </div>
+                   <small  class="alert alert-danger" style="display: block;" [hidden]="!passwordr.hasError('pattern')">Password (Letters, Number/SpecialChar and min 8 Chars)</small>  
+                     <small [hidden]="passwordr.hasError('pattern') || passwordr.valid || passwordr.pristine"
+                        class="alert alert-danger">Password is required
+                     </small>
+                  </div>
+                  <div class="col-sm-4">
+                      <div class="form-group">
+                         <label for="confirmPassword">Confirm new password</label>
+                         <input type="password" class="form-control" id="confirmPasswordr"
+                         required validateEqual="password"
+                         placeholder="Confirm new password"
+                         [(ngModel)]="resetPass.confirmPassword" name="confirmPassword" 
+                         #confirmPasswordr="ngModel">
+                        
+                      </div>
+                      <small [hidden]="resetPass.password==resetPass.confirmPassword || confirmPasswordr.pristine"
+                      class="alert alert-danger">
+                      Passwords did not match
+                   </small>
+                      </div>
+  
+                  
+              </div>
+  
+              <button class="btn btn-primary" [disabled]="!passwordReset.form.valid || resetPass.password!=resetPass.confirmPassword  ">Submit</button>
+                
+                  </form>
+                  <br />
+                  <small [hidden]="errString=='None'"
+                  class="alert alert-danger">{{errString}}
+                  </small>
+                  <small [hidden]="successString=='None'"
+                  class="alert alert-success">{{successString}}
+                  </small>
+            </mat-expansion-panel>
+  </div>
+  </div>
+  <div class="row header-row" >
+          <div class="container col-9 header-col"><b><h5 style="text-align: left;">
+  Manage Departments
+      </h5></b></div>
+  </div>
+  
+  <div class="row body-outer-row">
+          <div class="container body-outer-col col-9">   
+  <mat-expansion-panel (click)="panelCLick()">
+      <mat-expansion-panel-header>
+          <mat-panel-title>
+        Add Department
+          </mat-panel-title>
+      
+      <mat-panel-description>
+          Type a new Department Name
+        </mat-panel-description>
+        </mat-expansion-panel-header>
+    
+        <div class="container col-9 body-inner-col" >
+                   <div style="margin:2% 0% 5% 0%">
+                  <h5 style="padding:2%; background-color:#4A148C;color:white; display: block;">Existing Departments</h5>
+        <mat-chip-list  style="display: inline-flex;">
+            <mat-chip style="	margin: 2% 1% 2% 1%;" *ngFor="let department of departmentsList" color="primary" selected="true">{{department}}</mat-chip>
+            </mat-chip-list>
+        </div>      
+     <form  style="font-size: medium;" (ngSubmit)="DepartmentSubmit(departmentForm)" #departmentForm="ngForm">
+    <div class="form-group">
+  
+      <label for="department">Add a New Department:</label>
+      <input name="department" [(ngModel)]="manageDepartment.departName" type="text"  placeholder="Enter Department Name "  required minlength="5"  #departName="ngModel"  />
+      <div [hidden]="departName.valid || departName.pristine"
+               class="alert alert-danger">
+          <small [hidden]="!departName.hasError('minlength')"> DepartMent Name is required (minimum 5 characters).</small> <small [hidden]="!departName.hasError('required')">Name is required</small>       
+      </div>
+      <div class="row">
+          <div class="span6" style="float: none; margin: 0 auto;">
+              <button style="margin-top:15%;" class="btn btn-primary" [disabled]="!departmentForm.form.valid"> Submit</button>
+  
+          <img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" /> &nbsp;&nbsp;&nbsp;
+          <!--<button class="btn btn-success btn-lg"><a [routerLink]="['/login']"><h3>Cancel</h3></a></button> -->
+          </div>
+          </div>
+     </div>
+     </form>
+    </div>
+    <small [hidden]="errString=='None'"
+    class="alert alert-danger">{{errString}}
+    </small>
+    <small [hidden]="successString=='None'"
+    class="alert alert-success">{{successString}}
+    </small>
+  
+  </mat-expansion-panel>
+  
+  <mat-expansion-panel (click)="panelCLick()">
+      <mat-expansion-panel-header>
+          <mat-panel-title>
+        Edit Department
+          </mat-panel-title>
+      
+      <mat-panel-description>
+          Change Department Name
+        </mat-panel-description>
+        </mat-expansion-panel-header>
+    
+        <div class="container col-9 body-inner-col" >
+                   <div style="margin:2% 0% 5% 0%">
+                  <h5 style="padding:2%; background-color:#4A148C;color:white; display: block;">Existing Departments</h5>
+        <mat-chip-list  style="display: inline-flex;">
+            <mat-chip  [selectable]="selectable" (click)="editDepartmentFunc('chip',department)" style="	margin: 2% 1% 2% 1%;" *ngFor="let department of departmentsList" color="primary" selected="true">{{department}}<mat-icon matChipRemove >border_color</mat-icon></mat-chip>
+            </mat-chip-list>
+        </div>      
+     <form  style="font-size: medium;" (ngSubmit)="editDepartmentFunc('submit',editDepartmentForm)" #editDepartmentForm="ngForm">
+    <div class="form-group">
+  
+      <label for="department">Change department name:</label>
+      <input name="department" [(ngModel)]="editDepartmentModel.departName" type="text"  placeholder="Enter Department Name "  required minlength="5"  #departName="ngModel"  />
+      <div [hidden]="departName.valid || departName.pristine"
+               class="alert alert-danger">
+          <small [hidden]="!departName.hasError('minlength')"> DepartMent Name is required (minimum 5 characters).</small> <small [hidden]="!departName.hasError('required')">Name is required</small>       
+      </div>
+      <div class="row">
+          <div class="span6" style="float: none; margin: 0 auto;">
+              <button style="margin-top:15%;" class="btn btn-primary" [disabled]="!editDepartmentForm.form.valid"> Submit</button>
+  
+          <img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" /> &nbsp;&nbsp;&nbsp;
+          <!--<button class="btn btn-success btn-lg"><a [routerLink]="['/login']"><h3>Cancel</h3></a></button> -->
+          </div>
+          </div>
+     </div>
+     </form>
+    </div>
+    <small [hidden]="errString=='None'"
+    class="alert alert-danger">{{errString}}
+    </small>
+    <small [hidden]="successString=='None'"
+    class="alert alert-success">{{successString}}
+    </small>
+  
+  </mat-expansion-panel>
+  
+  
+  <mat-expansion-panel (click)="panelCLick()"  style="margin-top:1%;">
+      <mat-expansion-panel-header>
+          <mat-panel-title>
+        Remove a department
+          </mat-panel-title>
+      
+      <mat-panel-description>
+          Select a department to remove
+        </mat-panel-description>
+        </mat-expansion-panel-header> 
+        <div style="margin:2% 0% 5% 0%">
+          <h5 style="padding:2%; background-color:#4A148C;color:white; display: block;">Existing Departments</h5>
+  <mat-chip-list  style="display: inline-flex;">
+    <mat-chip [selectable]="selectable"
+    [removable]="removable" (remove)="remove('department',department)"  style="margin: 2% 1% 2% 1%;" *ngFor="let department of departmentsList" color="primary" selected="true">{{department}}  <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon></mat-chip>
+    </mat-chip-list>
+  </div>
+        </mat-expansion-panel>
+  </div>
+  </div>
+  
+  <div class="row header-row" >
+      <div class="container header-col col-9"><b><h5 style="text-align: left;">
+  Manage Projects
+      </h5></b></div></div>
+  <div class="row customRow body-outer-row" >
+      <div class="container col-9 body-outer-col" >
+     
+      <mat-expansion-panel  (click)="panelCLick()">
+          <mat-expansion-panel-header>
+              <mat-panel-title>
+            Add a Project
+              </mat-panel-title>
+          
+          <mat-panel-description>
+              Type a new Project
+            </mat-panel-description>
+            </mat-expansion-panel-header>
+    
+            <div class="container col-9 body-inner-col" >
+                  <div style="margin:2% 0% 5% 0%">
+                          <h5 style="padding:2%; background-color:#4A148C;color:white; display: block;">Existing Projects</h5>
+                <mat-chip-list [hidden]="departmentsList.indexOf(project.selectedDepartment)==-1" style="display: inline-flex;">
+                    <mat-chip style="	margin: 2% 1% 2% 1%;" *ngFor="let project of projectList" color="primary" selected="true">{{project}}</mat-chip>
+                    </mat-chip-list>
+                </div>      
+          
+    <form  style="font-size: medium;" (ngSubmit)="ProjectSubmit(projectForm)" #projectForm="ngForm">
+    <div class="form-group">
+      <label for="task">Select a department</label>
+          <select name ="task" class='select-department' required (change)="departmentChange('project')" [(ngModel)]="project.selectedDepartment">
+                  <option class='option' [value]="selectUndefinedOptionValue"> Select a department</option>  
+              <option class='option' *ngFor='let option of departmentsList' [ngValue]="option">{{option}}</option>
+      </select><br /><br />
+      <label for="department">Add a New Project:</label>
+      <input name="department" type="text" [(ngModel)]="project.projectName" placeholder="Enter Project Name" required minlength="5"  #projectName="ngModel"/>
+      <div [hidden]="projectName.valid || projectName.pristine"
+               class="alert alert-danger">
+          <small [hidden]="!projectName.hasError('minlength') || departmentsList.indexOf(project.selectedDepartment)!=-1"> DepartMent Name is required (minimum 5 characters).</small> <small [hidden]="!projectName.hasError('required')">Name is required</small>       
+      </div>
+      <div class="row">
+          <div class="span6" style="float: none; margin: 0 auto;">
+              <button style="margin-top:15%;" class="btn btn-primary" [disabled]="!projectForm.form.valid " > Submit</button>
+              <img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" /> &nbsp;&nbsp;&nbsp;
+          <!--<button class="btn btn-success btn-lg"><a [routerLink]="['/login']"><h3>Cancel</h3></a></button> -->
+          </div>
+          </div>
+     </div>
+     </form>
+    </div>
+    <small [hidden]="errString=='None'"
+    class="alert alert-danger">{{errString}}
+    </small>
+    <small [hidden]="successString=='None'"
+    class="alert alert-success">{{successString}}
+    </small>
+  </mat-expansion-panel>
+  <mat-expansion-panel (click)="panelCLick()"  style="margin-top:1%;">
+      <mat-expansion-panel-header>
+          <mat-panel-title>
+        Remove a project
+          </mat-panel-title>
+      
+      <mat-panel-description>
+          Select a project to remove
+        </mat-panel-description>
+        </mat-expansion-panel-header> 
+        <div class="container" style="text-align: left;"><label for="task">Select a department</label>
+        <select name ="task" class='select-department' required (change)="departmentChange('project')" [(ngModel)]="project.selectedDepartment">
+                <option class='option' [value]="selectUndefinedOptionValue"> Select a department</option>  
+            <option class='option' *ngFor='let option of departmentsList' [ngValue]="option">{{option}}</option>
+    </select><br /><br />
+         </div>
+        <div style="margin:2% 0% 5% 0%">
+          <h5 style="padding:2%; background-color:#4A148C;color:white; display: block;">Existing Projects</h5>
+  <mat-chip-list [hidden]="departmentsList.indexOf(project.selectedDepartment)==-1" style="display: inline-flex;">
+    <mat-chip [selectable]="selectable"
+    [removable]="removable" (remove)="remove('project',project)"  style="margin: 2% 1% 2% 1%;" *ngFor="let project of projectList" color="primary" selected="true">{{project}}  <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon></mat-chip>
+    </mat-chip-list>
+  </div>
+  <small [hidden]="errString=='None'"
+  class="alert alert-danger">{{errString}}
+  </small>
+        </mat-expansion-panel>
+  </div>
+  </div>
+  
+  <div class="row header-row" >
+      <div class="container col-9 header-col"><b><h5 style="text-align: left;">
+      Manage Stages
+          </h5></b></div>
+      </div>
+  <div class="row   customRow body-outer-row" >
+      <div class="container col-9 body-outer-col" >
+          <mat-expansion-panel (click)="panelCLick()">
+              <mat-expansion-panel-header>
+                  <mat-panel-title>
+                Add a Stage
+                  </mat-panel-title>
+              
+              <mat-panel-description>
+                  Type a new stage name
+                </mat-panel-description>
+                </mat-expansion-panel-header>
+  
+              <div class="container col-9 body-inner-col" >
+                  <div style="margin:2% 0% 5% 0%">
+                          <h5 style="padding:2%; background-color:#4A148C;color:white; display: block;">Existing Stages</h5>
+                <mat-chip-list [hidden]="departmentsList.indexOf(project.selectedDepartment)==-1" style="display: inline-flex;">
+                    <mat-chip style="	margin: 2% 1% 2% 1%;" *ngFor="let stage of stageList" color="primary" selected="true">{{stage}}</mat-chip>
+                    </mat-chip-list>
+                </div> 
+  
+  
+                
+    <form  style="font-size: medium;" (ngSubmit)="StageSubmit(stageForm)" #stageForm="ngForm">
+    <div class="form-group">
+          <label for="task">Select a department</label>
+          <select name ="task" class='select-department' required (change)="departmentChange('stage')" [(ngModel)]="project.selectedDepartment">
+                  <option class='option' [value]="selectUndefinedOptionValue"> Select a department</option>  
+              <option class='option' *ngFor='let option of departmentsList' [ngValue]="option">{{option}}</option>
+      </select><br /><br />
+      <label for="stage">Add a New Stage:</label>
+      <input name="stage" type="text" [(ngModel)]="stage.stageName" placeholder="Enter a Stage Name "  required minlength="5"  #stageName="ngModel"/>
+      <div [hidden]="stageName.valid || stageName.pristine"
+               class="alert alert-danger">
+          <small [hidden]="!stageName.hasError('minlength')||departmentsList.indexOf(project.selectedDepartment)!=-1"> DepartMent Name is required (minimum 5 characters).</small> <small [hidden]="!stageName.hasError('required')">Name is required</small>       
+      </div>
+      <div class="row">
+              <div class="span6" style="float: none; margin: 0 auto;">
+                      <button style="margin-top:15%;" class="btn btn-primary" [disabled]="!stageForm.form.valid && departmentsList.indexOf(project.selectedDepartment)==-1"> Submit</button>
+                      <img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" /> &nbsp;&nbsp;&nbsp;
+              <!--<button class="btn btn-success btn-lg"><a [routerLink]="['/login']"><h3>Cancel</h3></a></button> -->
+              </div>
+              </div>    
+     </div>
+     </form>
+     </div>
+     <small [hidden]="errString=='None'"
+     class="alert alert-danger">{{errString}}
+     </small>
+     <small [hidden]="successString=='None'"
+     class="alert alert-success">{{successString}}
+     </small>
+   
+  </mat-expansion-panel>
+  
+  <mat-expansion-panel (click)="panelCLick()"  style="margin-top:1%;">
+      <mat-expansion-panel-header>
+          <mat-panel-title>
+        Remove a stage
+          </mat-panel-title>
+      
+      <mat-panel-description>
+          Select a stage to remove
+        </mat-panel-description>
+        </mat-expansion-panel-header> 
+        <div class="container" style="text-align: left;"><label for="task">Select a department</label>
+          <select name ="task" class='select-department' required (change)="departmentChange('stage')" [(ngModel)]="project.selectedDepartment">
+                  <option class='option' [value]="selectUndefinedOptionValue"> Select a department</option>  
+              <option class='option' *ngFor='let option of departmentsList' [ngValue]="option">{{option}}</option>
+      </select><br /><br />
+           </div>
+          <div style="margin:2% 0% 5% 0%">
+            <h5 style="padding:2%; background-color:#4A148C;color:white; display: block;">Existing Stages</h5>
+    <mat-chip-list [hidden]="departmentsList.indexOf(project.selectedDepartment)==-1" style="display: inline-flex;">
+      <mat-chip [selectable]="selectable"
+      [removable]="removable" (remove)="remove('stage',stage)"  style="margin: 2% 1% 2% 1%;" *ngFor="let stage of stageList" color="primary" selected="true">{{stage}}  <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon></mat-chip>
+      </mat-chip-list>
+    </div>
+    <small [hidden]="errString=='None'"
+    class="alert alert-danger">{{errString}}
+    </small>
+     
+      </mat-expansion-panel>
+    </div>
+  </div>
+  
+  
+  
+  <div class="row header-row" >
+      <div class="container col-9 header-col"><b><h5 style="text-align: left;">
+      Manage Tasks
+          </h5></b></div>
+      </div>
+  
+  <div class="row  customRow body-outer-row" style="padding-bottom: 5%;" >
+      <div class="container col-9 body-outer-col" >
+          <mat-expansion-panel  (click)="panelCLick()">
+              <mat-expansion-panel-header>
+                  <mat-panel-title>
+                Add a Task
+                  </mat-panel-title>
+              
+              <mat-panel-description>
+                  Type a new task name
+                </mat-panel-description>
+                </mat-expansion-panel-header>
+                <div class="container col-9 body-inner-col" >
+                  <div style="margin:2% 0% 5% 0%">
+                      <h5 style="padding:2%; background-color:#4A148C;color:white; display: block;">Existing Tasks</h5>
+            <mat-chip-list [hidden]="departmentsList.indexOf(project.selectedDepartment)==-1" style="display: inline-flex;">
+                <mat-chip style="	margin: 2% 1% 2% 1%;" *ngFor="let task of taskList" color="primary" selected="true">{{task}}</mat-chip>
+                </mat-chip-list>
+            </div> 
+  
+    <form  style="font-size: medium;" (ngSubmit)="TaskSubmit(taskForm)" #taskForm="ngForm">
+    <div class="form-group">
+      <label for="task">Select a department</label>
+          <select name ="task"  class='select-department' required (change)="departmentChange('task')" [(ngModel)]="project.selectedDepartment" #dep="ngModel">
+          <option class='option' [value]="selectUndefinedOptionValue"> Select a department</option>  
+      <option class='option' *ngFor='let option of departmentsList' [ngValue]="option">{{option}}</option>
+  </select><br />
+  <small [hidden]="departmentsList.indexOf(project.selectedDepartment)!=-1 || dep.pristine"
+  class="alert alert-danger">
+  Select a valid department
+  </small>
+  <br /><br />
+                 <label for="name">Who can Approve this task</label><br />
+              <select multiple="" style="text-align:center;width:20%;height:30%;overflow-x:auto;overflow-y: auto;" [disabled]="departmentsList.indexOf(project.selectedDepartment)==-1"  name ="approverEmail" class='select-department'  required  [(ngModel)]="taskModel.Approver" #ApproverEmail="ngModel" >
+            <!--      <option class='option' [value]="selectUndefinedOptionValue"> Select an email Id</option> --> 
+                <option class='option' *ngFor='let option of emailList' [ngValue]="option"> {{option}} </option>
+              </select><br />
+        <!--      <small [hidden]="emailList.indexOf(taskModel.Approver)!=-1 || ApproverEmail.pristine"
+                 class="alert alert-danger">
+                 Select a valid emailId
+              </small>-->
+              <br /><br />
+  
+  <label for="task">Add a New Task:</label>
+  <input name="department" type="text" [(ngModel)]="taskModel.taskName" placeholder="Enter Task Name" required minlength="5"  #taskName="ngModel"/>
+     
+  <div [hidden]="taskName.valid || taskName.pristine"
+               class="alert alert-danger">
+          <small [hidden]="!taskName.hasError('minlength')"> Task Name is required (minimum 5 characters).</small> <small [hidden]="!taskName.hasError('required')">Name is required</small>       
+      </div>
+      <!--<button class="btn btn-primary" [disabled]="departmentsList.indexOf(project.selectedDepartment)==-1||emailList.indexOf(taskModel.Approver)==-1 || !taskForm.form.valid" > Submit</button>-->
+      <button class="btn btn-primary"  > Submit</button> 
+    </div>
+     </form>
+     </div>
+     <small [hidden]="errString=='None'"
+     class="alert alert-danger">{{errString}}
+     </small>
+     <small [hidden]="successString=='None'"
+     class="alert alert-success">{{successString}}
+     </small>
+     </mat-expansion-panel>
+  
+  <mat-expansion-panel (click)="panelCLick()" style="margin-top:1%;">
+      <mat-expansion-panel-header>
+          <mat-panel-title>
+        Remove a task
+          </mat-panel-title>
+      
+      <mat-panel-description>
+          Select a task to remove
+        </mat-panel-description>
+        </mat-expansion-panel-header> 
+        <div class="container" style="text-align: left;"><label for="task">Select a department</label>
+          <select name ="task" class='select-department' required (change)="departmentChange('task')" [(ngModel)]="project.selectedDepartment">
+                  <option class='option' [value]="selectUndefinedOptionValue"> Select a department</option>  
+              <option class='option' *ngFor='let option of departmentsList' [ngValue]="option">{{option}}</option>
+      </select><br /><br />
+           </div>
+          <div style="margin:2% 0% 5% 0%">
+            <h5 style="padding:2%; background-color:#4A148C;color:white; display: block;">Existing Tasks</h5>
+    <mat-chip-list [hidden]="departmentsList.indexOf(project.selectedDepartment)==-1" style="display: inline-flex;">
+      <mat-chip [selectable]="selectable"
+      [removable]="removable" (remove)="remove('task',task)"  style="margin: 2% 1% 2% 1%;" *ngFor="let task of taskList" color="primary" selected="true">{{task}}  <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon></mat-chip>
+      </mat-chip-list>
+    </div>
+    <small [hidden]="errString=='None'"
+    class="alert alert-danger">{{errString}}
+    </small>
+     
+  
+      </mat-expansion-panel>
+      <mat-expansion-panel (click)="panelCLick()" style="margin-top:1%;">
+          <mat-expansion-panel-header>
+              <mat-panel-title>
+            Edit a task
+              </mat-panel-title>
+          
+          <mat-panel-description>
+              Click on a task to edit its approver
+            </mat-panel-description>
+            </mat-expansion-panel-header> 
+            <div class="container" style="text-align: left;"><label for="task">Select a department</label>
+              <select name ="task" class='select-department' required (change)="departmentChange('taskEdit')" [(ngModel)]="project.selectedDepartment">
+                      <option class='option' [value]="selectUndefinedOptionValue"> Select a department</option>  
+                  <option class='option' *ngFor='let option of departmentsList' [ngValue]="option">{{option}}</option>
+          </select><br /><br />
+               </div>
+              <div style="margin:2% 0% 5% 0%">
+                <h5 style="padding:2%; background-color:#4A148C;color:white; display: block;">Existing Tasks</h5>
+        <mat-chip-list [hidden]="departmentsList.indexOf(project.selectedDepartment)==-1" style="display: inline-flex;">
+          <mat-chip [selectable]="selectable"
+           (click)="editTask('edit',task)"  style="margin: 2% 1% 2% 1%;" *ngFor="let task of taskList" color="primary" selected="true">{{task}}  <mat-icon matChipRemove >border_color</mat-icon></mat-chip>
+          </mat-chip-list>
+        </div>
+        <label for="name">List of approvers</label>
+        <select    name ="approverEmail" class='select-department'  required  [(ngModel)]="taskModel.ApproverPresent" #ApproverEmailEdit="ngModel" >
+       < <option class='option' [value]="selectUndefinedOptionValue"> Select an approver email Id</option>  
+          <option class='option' *ngFor='let option of ApproversPresent' [ngValue]="option"> {{option}} </option>
+        </select><br />
+        <label for="name">Who can Approve this task</label>
+        <select [disabled]="departmentsList.indexOf(project.selectedDepartment)==-1"  name ="approverEmail" class='select-department'  required  [(ngModel)]="taskModel.Approver" #ApproverEmailEdit="ngModel" >
+            <option class='option' [value]="selectUndefinedOptionValue"> Select an email Id</option>  
+          <option class='option' *ngFor='let option of emailList' [ngValue]="option"> {{option}} </option>
+        </select><br />
+        <small [hidden]="emailList.indexOf(taskModel.Approver)!=-1 || ApproverEmailEdit.pristine"
+           class="alert alert-danger">
+           Select a valid emailId
+        </small>
+        <br />
+        <br />
+        <button class="btn btn-primary" (click)="editTask('submit','none')" [disabled]="departmentsList.indexOf(project.selectedDepartment)==-1||emailList.indexOf(taskModel.Approver)==-1" > Submit</button>
+        <button class="btn btn-danger" (click)="editTask('cancel','none')" [disabled]="departmentsList.indexOf(project.selectedDepartment)==-1||emailList.indexOf(taskModel.Approver)==-1 " > Cancel</button>
+        <br />
+        <small [hidden]="errString=='None'"
+        class="alert alert-danger">{{errString}}
+        </small>
+        <small [hidden]="successString=='None'"
+        class="alert alert-success">{{successString}}
+        </small>
+         
+      
+          </mat-expansion-panel>
+          
+    </div>
+  </div>
+  
